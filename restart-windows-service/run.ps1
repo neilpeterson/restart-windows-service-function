@@ -7,11 +7,11 @@ param($Request, $TriggerMetadata)
 Write-Host "PowerShell HTTP trigger function processed a request."
 
 Write-Output "========================"
-print-output $Request
+Write-Output $Request
 Write-Output "========================"
 
 Write-Output "========================"
-print-output $TriggerMetadata
+Write-Output $TriggerMetadata
 Write-Output "========================"
 
 # Interact with query parameters or the body of the request.
