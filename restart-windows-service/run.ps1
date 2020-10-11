@@ -14,6 +14,16 @@ Write-Output "========================"
 Write-Output $TriggerMetadata
 Write-Output "========================"
 
+# Get VM name from request
+# $vm = $($Request.body.data.alertContext.AffectedConfigurationItems).ToString()
+
+# Get VM resource group
+
+# az vm run-command invoke --command-id RunPowerShellScript --name $vm -g my-resource-group \
+#     --scripts @script.ps1 --parameters "arg1=somefoo" "arg2=somebar"
+
+# Get-AzVM -Name $vm | Stop-AzVM -Force
+
 # Interact with query parameters or the body of the request.
 $name = $Request.Query.Name
 if (-not $name) {
