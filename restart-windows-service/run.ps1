@@ -6,38 +6,14 @@ param($Request, $TriggerMetadata)
 # Write to the Azure Functions log stream.
 Write-Host "PowerShell HTTP trigger function processed a request."
 
-Write-Output "========================"
-Write-Output $Request
-Write-Output "========================"
+# Get Azure VM Resource ID
+$rawbody = $Request.RawBody | ConvertFrom-Json
+$vmResourceId = $rawbody.data.alertContext.AffectedConfigurationItems
+$vm = $vmResourceId.Split('/')
 
-Write-Output "========================"
-Write-Output $TriggerMetadata
-Write-Output "========================"
-
-# Get VM name from request
-# $vm = $($Request.body.data.alertContext.AffectedConfigurationItems).ToString()
-
-# Get VM resource group
-
-# az vm run-command invoke --command-id RunPowerShellScript --name $vm -g my-resource-group \
-#     --scripts @script.ps1 --parameters "arg1=somefoo" "arg2=somebar"
-
-# Get-AzVM -Name $vm | Stop-AzVM -Force
-
-# Interact with query parameters or the body of the request.
-$name = $Request.Query.Name
-if (-not $name) {
-    $name = $Request.Body.Name
-}
-
-$body = "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
-
-if ($name) {
-    $body = "Hello, $name. This HTTP triggered function executed successfully."
-}
-
-# Associate values to output bindings by calling 'Push-OutputBinding'.
-Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
-    StatusCode = [HttpStatusCode]::OK
-    Body = $body
-})
+# Create script within function and run on VM
+[System.String]$ScriptBlock = {Start-Service w3svc}
+$scriptFile = "RunScript.ps1"
+Out-File -FilePath $scriptFile -InputObject $ScriptBlock -NoNewline
+Invoke-AzVMRunCommand -ResourceGroupName $vm[4] -Name  $vm[8] -CommandId 'RunPowerShellScript' -ScriptPath $scriptFile
+Remove-Item -Path $scriptFile -Force -ErrorAction SilentlyContinue
