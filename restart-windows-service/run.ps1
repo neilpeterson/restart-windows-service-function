@@ -15,5 +15,5 @@ $vm = $vmResourceId.Split('/')
 [System.String]$ScriptBlock = {Start-Service w3svc}
 $scriptFile = "RunScript.ps1"
 Out-File -FilePath $scriptFile -InputObject $ScriptBlock -NoNewline
-Invoke-AzVMRunCommand -ResourceGroupName $vm[4] -Name  $vm[8] -CommandId 'RunPowerShellScript' -ScriptPath $scriptFile
+Invoke-AzVMRunCommand -ResourceGroupName $vm[4] -Name  $vm[8] -CommandId 'RunPowerShellScript' -ScriptPath $scriptFile -AsJob
 Remove-Item -Path $scriptFile -Force -ErrorAction SilentlyContinue
